@@ -22,13 +22,14 @@ $(document).ready(function(){
                     dataType: 'json',
                     contentType: 'application/json; charset=utf-8',
                     mimeType: 'application/json; charset=utf-8',
+                    /*
                     beforeSend: function (xhr) {
                         var token = $("meta[name='_csrf']").attr("content");
                         var header = $("meta[name='_csrf_header']").attr("content");
                         $(document).ajaxSend(function (e, xhr, options) {
                             xhr.setRequestHeader(header, token);
                         });
-                    },
+                    },*/
                     success: function (response) {
                         if(response!="Success"){
                             $( "<div id='errorBox' class='alert alert-danger fade in'>" +

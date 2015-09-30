@@ -20,7 +20,7 @@
                              authentication-success-handler-ref="customSuccessHandler"/>
         <security:logout logout-url="/logout" delete-cookies="JSESSIONID" success-handler-ref="customSuccessHandler"/>
         <security:remember-me data-source-ref="dataSource" authentication-success-handler-ref="customSuccessHandler" token-validity-seconds="10000" remember-me-parameter="remember-me"/>
-        <security:csrf disabled="false"/>
+        <security:csrf disabled="true"/>
     </security:http>
 
     <security:authentication-manager id="authenticationManager">

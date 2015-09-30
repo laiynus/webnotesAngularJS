@@ -34,29 +34,29 @@ public class NotesController {
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "addNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String addNote(@RequestBody Note note) throws IOException {
+    public @ResponseBody Note addNote(@RequestBody Note note) throws IOException {
         if(note.getNote() == null || note.getNote().isEmpty()){
-            return "Note can't be empty!";
+            return null;
         }else{
             if(note.getNote().length()>1000){
-                return "The maximum note length is 1000 characters!";
+                return null;
             }else{
                 note.setUser(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
                 note.setDateTimeCreate(new Timestamp(new java.util.Date().getTime()));
                 notesService.insert(note);
-                return "Success";
+                return note;
             }
         }
     }
 
     @Secured("isAuthenticated()")
-    @RequestMapping(value = "getLastNotes",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "getLastNotes",method = RequestMethod.GET)
     public @ResponseBody List getLastNotes(){
         return notesService.getLastUserNotes(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
     }
 
     @Secured("isAuthenticated()")
-    @RequestMapping(value = "getAllNotes",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "getAllNotes",method = RequestMethod.GET)
     public @ResponseBody List getAllNotes(){
         return notesService.getUserNotes(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
     }
@@ -78,12 +78,12 @@ public class NotesController {
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "editNote",method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String editNote(@RequestBody Note note){
+    public @ResponseBody Note editNote(@RequestBody Note note){
         if(note.getNote() == null || note.getNote().isEmpty()){
-            return "Note can't be empty!";
+            return null;
         }else {
             if(note.getNote().length()>1000){
-                return "The maximum note length is 1000 characters!";
+                return null;
             }else {
                 Note tmpNote = notesService.getNoteWithUser(note.getId());
                 if (tmpNote != null) {
@@ -91,14 +91,14 @@ public class NotesController {
                         tmpNote.setDateTimeCreate(new Timestamp(new java.util.Date().getTime()));
                         tmpNote.setNote(note.getNote());
                         notesService.update(tmpNote);
-                        return "Success";
+                        return tmpNote;
                     } else {
-                        return "Access denied!";
+                        return null;
                     }
                 }
             }
         }
-        return "This note is not found!";
+        return null;
     }
 
     @Secured("isAuthenticated()")

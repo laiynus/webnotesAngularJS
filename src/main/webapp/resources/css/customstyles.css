@@ -10,3 +10,21 @@
     margin-right: 7px;
     margin-left: 12px;
 }
+
+.ng-invalid{
+    border-color: #FA787E;
+}
+
+.ng-invalid.ng-dirty{
+    border-color: #FA787E;
+}
+
+.ng-valid.ng-dirty{
+    border-color: #78FA89;
+}
+
+.transparent{
+    background:none;
+    border:none;
+    box-shadow:none;
+}

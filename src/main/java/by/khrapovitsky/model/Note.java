@@ -14,7 +14,7 @@ public class Note implements Serializable{
     private int id;
     @Column(name = "note",nullable = false)
     private String note;
-    @Column(name = "datetimecreate",nullable = false)
+    @Column(name = "dateTimeCreate",nullable = false)
     private Timestamp dateTimeCreate;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "login")
