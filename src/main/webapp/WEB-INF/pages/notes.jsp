@@ -16,29 +16,29 @@
 <div id="header">
     <%@ include file="header.jspf" %>
 </div>
+<div id="top"/>
 <br>
 <br>
 <br>
 <br>
 <br>
 
-<div class="container">
+<div class="container" >
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="panel-title">Your note</div>
         </div>
-        <div class="panel-body" ng-app="crud">
+        <div class="panel-body" ng-app="mainModule">
             <div ng-controller="crudController">
                 <form name="crudForm" novalidate>
                     <button class="btn btn-success" id="addNote" ng-click="crudForm.$valid && createNote()">Add note</button>
                     <button class="btn btn-warning" id="editNote" ng-disabled="currentNote==null" ng-click="crudForm.$valid && updateNote()">Save changes</button>
-                    <button class="btn btn-info" id="switcherNote" style="float: right;">Show all notes</button>
+                    <button class="btn btn-info" id="switcherNote" style="float: right;" ng-click="switcherNote()">{{name}}</button>
                     <br>
                     <br>
-                    <input hidden id="selectedNote"/>
-                    <input hidden id="switcher" value="last"/>
                     <textarea class="form-control custom-control" id="noteText" rows="3" style="resize:vertical"
-                              placeholder="Enter your note (maximum length 1000 characters)" ng-maxlength="1000" ng-model="textareaText" required></textarea>
+                              placeholder="Enter your note (maximum length 5000 characters)" ng-maxlength="5000" ng-model="textareaText" required></textarea>
+                    <h6 class="pull-right">{{5000 - textareaText.length}} characters remaining</h6>
                 </form>
                 <br>
                 <br>
@@ -47,16 +47,16 @@
                     <thead>
                     <tr>
                         <th>Note</th>
-                        <th width="200">Date of modify</th>
+                        <th width="170">Date of modify</th>
                         <th width="50">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="tmp in notes">
-                        <td>{{ tmp.note }}</td>
+                    <tr ng-repeat="tmp in notes" ng-controller="scrollController">
+                        <td height="50">{{ tmp.note }}</td>
                         <td>{{ tmp.dateTimeCreate |  date:'dd-MM-yyyy HH:mm:ss' }}</td>
                         <td><button class="btn-xs transparent" ng-click="deleteNote(tmp.id)"><span class="glyphicon glyphicon-remove"></span></button>
-                        <button class="btn-xs transparent" ng-click="readNote(tmp.id)"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                        <button class="btn-xs transparent" ng-click="readNote(tmp.id); gotoNoteText()"><span class="glyphicon glyphicon-pencil"></span></button></td>
                     </tr>
                     </tbody>
                 </table>

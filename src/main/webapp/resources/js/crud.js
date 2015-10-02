@@ -1,6 +1,6 @@
-var crud = angular.module('crud', ['ngRoute']);
+var mainModule = angular.module('mainModule', ['ngRoute']);
 
-crud.config(['$routeProvider',
+mainModule.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.when('/', {
             controller: 'crudController',
@@ -9,13 +9,13 @@ crud.config(['$routeProvider',
     }
 ]);
 
-angular.module('crud').service('crudService',
+mainModule.service('crudService',
     ['$http', function ($http) {
 
-        this.getNotes = function () {
+        this.getNotes = function (url) {
             return $http({
                 method: 'GET',
-                url: "notes/getLastNotes",
+                url: url,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
                     'MimeType': 'application/json; charset=utf-8'
@@ -78,19 +78,21 @@ angular.module('crud').service('crudService',
     }]
 );
 
-angular.module('crud').controller('crudController', ['$scope', 'crudService',
+mainModule.controller('crudController' ,['$scope','crudService',
+
     function ($scope, crudService) {
 
         $scope.notes;
         $scope.textareaText = "";
         $scope.currentNote = null;
-
+        $scope.url = "notes/getLastNotes";
+        $scope.name = 'Show all notes';
         getNotes();
 
         function getNotes() {
-            crudService.getNotes().success(function (notes) {
+            crudService.getNotes($scope.url).success(function (notes) {
                 $scope.notes = notes;
-            }).error(function (error) {
+            }).error(function (jqXHR, textStatus, errorThrown) {
 
             });
         }
@@ -101,7 +103,7 @@ angular.module('crud').controller('crudController', ['$scope', 'crudService',
                 $scope.currentNote = null;
                 $scope.textareaText = null;
                 $scope.notes.unshift(data);
-            }).error(function (error) {
+            }).error(function (jqXHR, textStatus, errorThrown) {
 
             });
         };
@@ -110,7 +112,7 @@ angular.module('crud').controller('crudController', ['$scope', 'crudService',
             crudService.readNote(id).success(function (data) {
                 $scope.textareaText = data.note;
                 $scope.currentNote = data.id;
-            }).error(function (error) {
+            }).error(function (jqXHR, textStatus, errorThrown) {
 
             });
         };
@@ -126,7 +128,7 @@ angular.module('crud').controller('crudController', ['$scope', 'crudService',
                         $scope.notes[i] = data;
                     }
                 }
-            }).error(function (error) {
+            }).error(function (jqXHR, textStatus, errorThrown) {
 
             });
         };
@@ -140,12 +142,32 @@ angular.module('crud').controller('crudController', ['$scope', 'crudService',
                         $scope.notes.splice(i, 1);
                     }
                 }
-            }).error(function (error) {
+            }).error(function (jqXHR, textStatus, errorThrown) {
 
             });
         };
+
+        $scope.switcherNote = function(){
+            if($scope.url === "notes/getAllNotes"){
+                $scope.url = "notes/getLastNotes";
+                $scope.name = "Show all notes";
+            }else{
+                $scope.name = "Show last notes";
+                $scope.url = "notes/getAllNotes";
+            }
+            getNotes();
+        }
     }
 ]);
+
+mainModule.controller('scrollController',['$scope', '$location', '$anchorScroll',
+    function ($scope, $location, $anchorScroll) {
+        $scope.gotoNoteText = function() {
+            $location.hash('top');
+            $anchorScroll();
+        };
+}]);
+
 
 
 

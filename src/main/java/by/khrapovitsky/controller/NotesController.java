@@ -38,7 +38,7 @@ public class NotesController {
         if(note.getNote() == null || note.getNote().isEmpty()){
             return null;
         }else{
-            if(note.getNote().length()>1000){
+            if(note.getNote().length()>5000){
                 return null;
             }else{
                 note.setUser(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
@@ -63,26 +63,26 @@ public class NotesController {
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "deleteNote",method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String deleteNote(@RequestBody Note tmpNote){
+    public @ResponseBody String deleteNote(@RequestBody Note tmpNote) {
         Note note = notesService.getNoteWithUser(tmpNote.getId());
         if (note != null) {
             if (note.getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
                 notesService.delete(note);
                 return "Success";
             }else{
-                return "Access denied!";
+               return null;
             }
         }
-        return "This note is not found!";
+        return null;
     }
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "editNote",method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Note editNote(@RequestBody Note note){
+    public @ResponseBody Note editNote(@RequestBody Note note) {
         if(note.getNote() == null || note.getNote().isEmpty()){
             return null;
         }else {
-            if(note.getNote().length()>1000){
+            if(note.getNote().length()>5000){
                 return null;
             }else {
                 Note tmpNote = notesService.getNoteWithUser(note.getId());
@@ -103,7 +103,7 @@ public class NotesController {
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "getNote",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Note getNote(@RequestBody Note note){
+    public @ResponseBody Note getNote(@RequestBody Note note) {
         if (notesService.getNote(note.getId()) != null) {
             if (notesService.getNoteWithUser(note.getId()).getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
                 return notesService.getNote(note.getId());
