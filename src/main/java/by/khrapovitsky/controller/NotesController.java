@@ -1,5 +1,6 @@
 package by.khrapovitsky.controller;
 
+import by.khrapovitsky.model.JsonResponse;
 import by.khrapovitsky.model.Note;
 import by.khrapovitsky.model.User;
 import by.khrapovitsky.service.NotesService;
@@ -34,17 +35,17 @@ public class NotesController {
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "addNote", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Note addNote(@RequestBody Note note) throws IOException {
+    public @ResponseBody JsonResponse addNote(@RequestBody Note note) throws IOException {
         if(note.getNote() == null || note.getNote().isEmpty()){
-            return null;
+            return new JsonResponse("Error","Note can't be empty!");
         }else{
             if(note.getNote().length()>5000){
-                return null;
+                return new JsonResponse("Error","The maximum note length is 1000 characters!");
             }else{
                 note.setUser(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
                 note.setDateTimeCreate(new Timestamp(new java.util.Date().getTime()));
                 notesService.insert(note);
-                return note;
+                return new JsonResponse("Ok","",note);
             }
         }
     }
@@ -63,27 +64,27 @@ public class NotesController {
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "deleteNote",method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String deleteNote(@RequestBody Note tmpNote) {
+    public @ResponseBody JsonResponse deleteNote(@RequestBody Note tmpNote) {
         Note note = notesService.getNoteWithUser(tmpNote.getId());
         if (note != null) {
             if (note.getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
                 notesService.delete(note);
-                return "Success";
+                return new JsonResponse("Ok","");
             }else{
-               return null;
+               return new JsonResponse("Error","Access denied!");
             }
         }
-        return null;
+        return new JsonResponse("Error","This note is not found!");
     }
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "editNote",method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Note editNote(@RequestBody Note note) {
+    public @ResponseBody JsonResponse editNote(@RequestBody Note note) {
         if(note.getNote() == null || note.getNote().isEmpty()){
-            return null;
+            return new JsonResponse("Error","Note can't be empty!");
         }else {
             if(note.getNote().length()>5000){
-                return null;
+                return new JsonResponse("Error","The maximum note length is 5000 characters!");
             }else {
                 Note tmpNote = notesService.getNoteWithUser(note.getId());
                 if (tmpNote != null) {
@@ -91,25 +92,25 @@ public class NotesController {
                         tmpNote.setDateTimeCreate(new Timestamp(new java.util.Date().getTime()));
                         tmpNote.setNote(note.getNote());
                         notesService.update(tmpNote);
-                        return tmpNote;
+                        return new JsonResponse("Ok","",tmpNote);
                     } else {
-                        return null;
+                        return new JsonResponse("Error","Access denied!");
                     }
                 }
             }
         }
-        return null;
+        return new JsonResponse("Error","This note is not found!");
     }
 
     @Secured("isAuthenticated()")
     @RequestMapping(value = "getNote",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Note getNote(@RequestBody Note note) {
+    public @ResponseBody JsonResponse getNote(@RequestBody Note note) {
         if (notesService.getNote(note.getId()) != null) {
             if (notesService.getNoteWithUser(note.getId()).getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-                return notesService.getNote(note.getId());
+                return new JsonResponse("Ok","",notesService.getNote(note.getId()));
             }
         }
-        return null;
+        return new JsonResponse("Error","This note is not found!");
     }
 
 }

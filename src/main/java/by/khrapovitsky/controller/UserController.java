@@ -1,5 +1,6 @@
 package by.khrapovitsky.controller;
 
+import by.khrapovitsky.model.JsonResponse;
 import by.khrapovitsky.model.User;
 import by.khrapovitsky.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,21 +65,21 @@ public class UserController {
 
     @Secured("isAnonymous()")
     @RequestMapping(value = {"registrationUser"}, method = RequestMethod.POST)
-    public @ResponseBody String registerUser(@RequestBody Object object) {
+    public @ResponseBody JsonResponse registerUser(@RequestBody Object object) {
         User user = new User((String)((Map)object).get("username"),(String)((Map)object).get("password"));
         String confirmPassword = (String)((Map)object).get("confirmPassword");
         if (user.getPassword() == null || user.getPassword().isEmpty() || confirmPassword == null || confirmPassword.isEmpty() || user.getUsername() == null || user.getUsername().isEmpty()) {
-            return "All fields are required!";
+            return new JsonResponse("Error","All fields are required!");
         }
         if(!isAlphanumeric(user.getUsername()) || !isAlphanumeric(user.getPassword()) || ! isAlphanumeric(confirmPassword)){
-            return "Login and password must contains only letters or numbers!";
+            return new JsonResponse("Error","Login and password must contains only letters or numbers!");
         }
         String password = user.getPassword();
         if(usersService.getUser(user.getUsername())!=null){
-            return "This user already exist!";
+            return new JsonResponse("Error","This user already exist!");
         }else{
             if(!user.getPassword().equals(confirmPassword)){
-                return "Passwords aren't match!";
+                return new JsonResponse("Error","Passwords aren't match!");
             }
             user.setPassword(passwordEncoder.encodePassword(password,null));
             usersService.insert(user);
@@ -92,12 +93,12 @@ public class UserController {
                 User tmpUser = usersService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
                 tmpUser.setLastDateOfUse(new Timestamp(new java.util.Date().getTime()).toString());
                 usersService.update(tmpUser);
-                return "Success";
+                return new JsonResponse("Ok","");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "You have registered successfully, but automatic authorization is failed.Please log in manually.";
+        return new JsonResponse("Error","You have registered successfully, but automatic authorization is failed.Please log in manually.");
     }
 
 }

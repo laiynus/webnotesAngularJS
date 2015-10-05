@@ -11,20 +11,21 @@
     margin-left: 12px;
 }
 
-.ng-invalid{
+.ng-invalid.ng-dirty {
     border-color: #FA787E;
 }
 
-.ng-invalid.ng-dirty{
-    border-color: #FA787E;
-}
-
-.ng-valid.ng-dirty{
+.ng-valid.ng-dirty {
     border-color: #78FA89;
 }
 
-.transparent{
-    background:none;
-    border:none;
-    box-shadow:none;
+form.ng-submitted .ng-invalid {
+    border-color: #FA787E;
 }
+
+.transparent {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+

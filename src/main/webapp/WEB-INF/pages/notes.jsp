@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap/bootstrap.css"/>">
     <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/bootstrap.min.js"/>"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/customstyles.css"/>">
-    <script type="text/javascript" src="<c:url value="/resources/js/crud.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/main.js"/>"></script>
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
@@ -30,6 +30,7 @@
         </div>
         <div class="panel-body" ng-app="mainModule">
             <div ng-controller="crudController">
+                <alert></alert>
                 <form name="crudForm" novalidate>
                     <button class="btn btn-success" id="addNote" ng-click="crudForm.$valid && createNote()">Add note</button>
                     <button class="btn btn-warning" id="editNote" ng-disabled="currentNote==null" ng-click="crudForm.$valid && updateNote()">Save changes</button>
