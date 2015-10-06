@@ -1,6 +1,6 @@
 package by.khrapovitsky.controller;
 
-import by.khrapovitsky.model.JsonResponse;
+import by.khrapovitsky.response.JsonResponse;
 import by.khrapovitsky.model.Note;
 import by.khrapovitsky.model.User;
 import by.khrapovitsky.service.NotesService;
@@ -9,10 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
@@ -25,7 +22,7 @@ public class NotesController {
 
     @Autowired
     private NotesService notesService;
-    
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView defaultPage() {
         ModelAndView model = new ModelAndView();
@@ -51,21 +48,19 @@ public class NotesController {
     }
 
     @Secured("isAuthenticated()")
-    @RequestMapping(value = "getLastNotes",method = RequestMethod.GET)
-    public @ResponseBody List getLastNotes(){
-        return notesService.getLastUserNotes(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
+    @RequestMapping(value = "getNotes",method = RequestMethod.GET)
+    public @ResponseBody List getNotes(@RequestParam(value = "flag") String flag){
+        if(flag.equals("last")){
+            return notesService.getLastUserNotes(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
+        }else{
+            return notesService.getUserNotes(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
+        }
     }
 
     @Secured("isAuthenticated()")
-    @RequestMapping(value = "getAllNotes",method = RequestMethod.GET)
-    public @ResponseBody List getAllNotes(){
-        return notesService.getUserNotes(new User(SecurityContextHolder.getContext().getAuthentication().getName(), null));
-    }
-
-    @Secured("isAuthenticated()")
-    @RequestMapping(value = "deleteNote",method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonResponse deleteNote(@RequestBody Note tmpNote) {
-        Note note = notesService.getNoteWithUser(tmpNote.getId());
+    @RequestMapping(value = "deleteNote",method = RequestMethod.DELETE)
+    public @ResponseBody JsonResponse deleteNote(@RequestParam(value = "id") Integer id) {
+        Note note = notesService.getNoteWithUser(id);
         if (note != null) {
             if (note.getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
                 notesService.delete(note);
@@ -103,11 +98,11 @@ public class NotesController {
     }
 
     @Secured("isAuthenticated()")
-    @RequestMapping(value = "getNote",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonResponse getNote(@RequestBody Note note) {
-        if (notesService.getNote(note.getId()) != null) {
-            if (notesService.getNoteWithUser(note.getId()).getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-                return new JsonResponse("Ok","",notesService.getNote(note.getId()));
+    @RequestMapping(value = "getNote",method = RequestMethod.GET)
+    public @ResponseBody JsonResponse getNote(@RequestParam(value = "id") Integer id ){
+        if (notesService.getNote(id) != null) {
+            if (notesService.getNoteWithUser(id).getUser().getUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+                return new JsonResponse("Ok","",notesService.getNote(id));
             }
         }
         return new JsonResponse("Error","This note is not found!");

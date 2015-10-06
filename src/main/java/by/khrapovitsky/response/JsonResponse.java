@@ -1,4 +1,4 @@
-package by.khrapovitsky.model;
+package by.khrapovitsky.response;
 
 
 public class JsonResponse {

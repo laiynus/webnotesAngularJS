@@ -1,6 +1,6 @@
 package by.khrapovitsky.controller;
 
-import by.khrapovitsky.model.JsonResponse;
+import by.khrapovitsky.response.JsonResponse;
 import by.khrapovitsky.model.User;
 import by.khrapovitsky.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.*;
