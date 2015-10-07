@@ -4,14 +4,14 @@ mainModule.config([
     '$routeProvider', function ($routeProvider) {
         $routeProvider.when('/notes', {
             controller: 'crudController',
-            templateUrl: 'notes'
+            templateUrl: 'pages/notes.jsp'
         });
         $routeProvider.when('/registration', {
             controller: 'registrationController',
-            templateUrl: 'registration'
+            templateUrl: 'pages/registration.jsp'
         });
         $routeProvider.when('/sign', {
-            templateUrl: 'sign'
+            templateUrl: 'pages/sign.jsp'
         });
         $routeProvider.otherwise({
             redirectTo: '/'
@@ -145,9 +145,10 @@ mainModule.controller('crudController', ['$scope', 'crudService', 'alertFactory'
                 if (data.status === "Ok") {
                     for (i in $scope.notes) {
                         if ($scope.notes[i].id == data.object.id) {
-                            $scope.notes[i] = data.object;
+                            $scope.notes.splice(i, 1);
                         }
                     }
+                    $scope.notes.unshift(data.object);
                     alertFactory.success("Note successfully updated");
                 } else {
                     getNotes();
@@ -218,9 +219,9 @@ mainModule.service('registrationService',
     }]
 );
 
-mainModule.controller('registrationController', ['$scope', '$location', 'registrationService', 'alertFactory',
+mainModule.controller('registrationController', ['$scope', 'registrationService', 'alertFactory',
 
-    function ($scope, $location, registrationService, alertFactory) {
+    function ($scope,registrationService, alertFactory) {
 
         $scope.username = null;
         $scope.password = null;
@@ -233,7 +234,7 @@ mainModule.controller('registrationController', ['$scope', '$location', 'registr
             var user = {"username": username, "password": password, "confirmPassword": confirmPassword};
             registrationService.registrationUser(user).success(function (data) {
                 if (data.status === "Ok") {
-                    $location.path("/notes");
+                    location.reload();
                 } else {
                     alertFactory.error(data.errorMessage);
                 }
