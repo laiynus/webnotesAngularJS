@@ -2,10 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/angular/angular.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js/angular/angular-route.js"/>"></script>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap/bootstrap.css"/>">
+    <script type="text/javascript" src="<c:url value="/resources/js/jquery/jquery-2.1.4.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/angular/angular.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/angular/angular-route.min.js"/>"></script>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap/bootstrap.min.css"/>">
     <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/bootstrap.min.js"/>"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/customstyles.css"/>">
     <script type="text/javascript" src="<c:url value="/resources/js/main.js"/>"></script>
